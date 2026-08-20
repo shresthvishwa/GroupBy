@@ -4,8 +4,6 @@
 -- Target Context: Thapar Institute of Engineering & Technology (TIET)
 -- ============================================================
 
-USE groupby;
-
 -- Clean existing data
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE ConnectionRequest;

@@ -3,10 +3,6 @@
 -- Schema Design (MySQL 8+)
 -- ============================================================
 
-DROP DATABASE IF EXISTS groupby;
-CREATE DATABASE groupby;
-USE groupby;
-
 -- ------------------------------------------------------------
 -- Core entity: Student (Restricted to @thapar.edu domain)
 -- ------------------------------------------------------------
