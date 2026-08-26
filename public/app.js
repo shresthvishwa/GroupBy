@@ -244,8 +244,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnLandingHeroSignIn) btnLandingHeroSignIn.addEventListener('click', handleLandingSignIn);
 
   async function checkSavedSession() {
-    // Always show landing page first on load as requested
-    state.activeStudent = null;
+    const savedId = parseInt(localStorage.getItem('groupby_active_student_id'));
+    if (savedId && state.students && state.students.length > 0) {
+      const savedStudent = state.students.find(s => s.student_id === savedId);
+      if (savedStudent) {
+        state.activeStudent = savedStudent;
+        if (activeStudentSelect) activeStudentSelect.value = savedStudent.student_id;
+        await updateActiveProfileUI();
+        showMainApp();
+        showDashboardLandingView();
+        return;
+      }
+    }
     showLandingPage();
   }
 
@@ -700,9 +710,10 @@ document.addEventListener('DOMContentLoaded', () => {
       state.activeStudent = data.user;
       localStorage.setItem('groupby_active_student_id', data.user.student_id);
 
+      showMainApp();
+      showDashboardLandingView();
       fetchMetadata();
       updateActiveProfileUI();
-      showDashboardLandingView();
     } else if (data.requiresRegistration) {
       showToast(data.message, 'info');
       const gSec = document.getElementById('googleAuthSection');
@@ -1110,10 +1121,10 @@ document.addEventListener('DOMContentLoaded', () => {
       state.activeStudent = data.user;
       localStorage.setItem('groupby_active_student_id', data.user.student_id);
 
-      await fetchMetadata();
-      await updateActiveProfileUI();
       showMainApp();
       showDashboardLandingView();
+      fetchMetadata();
+      updateActiveProfileUI();
     } catch (err) {
       showToast(err.message, 'error');
     }
@@ -1174,10 +1185,10 @@ document.addEventListener('DOMContentLoaded', () => {
       state.activeStudent = data.user;
       localStorage.setItem('groupby_active_student_id', data.user.student_id);
 
-      await fetchMetadata();
-      await updateActiveProfileUI();
       showMainApp();
       showDashboardLandingView();
+      fetchMetadata();
+      updateActiveProfileUI();
     } catch (err) {
       showToast(err.message, 'error');
     }
