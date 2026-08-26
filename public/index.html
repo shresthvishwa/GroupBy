@@ -893,9 +893,14 @@
               </select>
             </div>
             <div class="filter-item">
-              <label>Contact Info (Discord / Phone) *</label>
-              <input type="text" id="regContact" class="filter-input" placeholder="Discord: @user | WhatsApp: +91..." required>
+              <label>Mobile Number *</label>
+              <input type="tel" id="regMobile" class="filter-input" placeholder="e.g. 9876543210" required>
             </div>
+          </div>
+
+          <div class="filter-item" style="margin-bottom: 12px;">
+            <label><i class="ti ti-brand-instagram" style="color:#e1306c;"></i> Instagram Profile / Handle (Optional)</label>
+            <input type="text" id="regInstagram" class="filter-input" placeholder="e.g. @shresth_v or instagram.com/...">
           </div>
 
           <!-- OPTIONAL CREDENTIAL LINKS -->
@@ -903,15 +908,15 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
             <div class="filter-item">
               <label><i class="ti ti-brand-linkedin" style="color:#0a66c2;"></i> LinkedIn</label>
-              <input type="url" id="regLinkedin" class="filter-input" placeholder="https://linkedin.com/in/...">
+              <input type="text" id="regLinkedin" class="filter-input" placeholder="Username or Link">
             </div>
             <div class="filter-item">
               <label><i class="ti ti-brand-github"></i> GitHub</label>
-              <input type="url" id="regGithub" class="filter-input" placeholder="https://github.com/...">
+              <input type="text" id="regGithub" class="filter-input" placeholder="Username or Link">
             </div>
             <div class="filter-item">
               <label><i class="ti ti-code" style="color:#ffa116;"></i> LeetCode</label>
-              <input type="url" id="regLeetcode" class="filter-input" placeholder="https://leetcode.com/u/...">
+              <input type="text" id="regLeetcode" class="filter-input" placeholder="Username or Link">
             </div>
           </div>
 
@@ -977,23 +982,28 @@
           </div>
 
           <div class="filter-item" style="margin-bottom: 12px;">
-            <label>Contact Info (Discord / WhatsApp) *</label>
-            <input type="text" id="editContact" class="filter-input" required>
+            <label>Mobile Number *</label>
+            <input type="tel" id="editMobile" class="filter-input" placeholder="e.g. 9876543210" required>
+          </div>
+
+          <div class="filter-item" style="margin-bottom: 12px;">
+            <label><i class="ti ti-brand-instagram" style="color:#e1306c;"></i> Instagram Profile / Handle (Optional)</label>
+            <input type="text" id="editInstagram" class="filter-input" placeholder="e.g. @shresth_v or instagram.com/...">
           </div>
 
           <div style="font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin: 14px 0 8px 0;">Credibility & Developer Profiles (Optional)</div>
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
             <div class="filter-item">
               <label><i class="ti ti-brand-linkedin" style="color:#0a66c2;"></i> LinkedIn</label>
-              <input type="url" id="editLinkedin" class="filter-input" placeholder="https://linkedin.com/in/...">
+              <input type="text" id="editLinkedin" class="filter-input" placeholder="Username or Link">
             </div>
             <div class="filter-item">
               <label><i class="ti ti-brand-github"></i> GitHub</label>
-              <input type="url" id="editGithub" class="filter-input" placeholder="https://github.com/...">
+              <input type="text" id="editGithub" class="filter-input" placeholder="Username or Link">
             </div>
             <div class="filter-item">
               <label><i class="ti ti-code" style="color:#ffa116;"></i> LeetCode</label>
-              <input type="url" id="editLeetcode" class="filter-input" placeholder="https://leetcode.com/u/...">
+              <input type="text" id="editLeetcode" class="filter-input" placeholder="Username or Link">
             </div>
           </div>
 

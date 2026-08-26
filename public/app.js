@@ -82,7 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const regBranch = document.getElementById('regBranch');
   const regSemester = document.getElementById('regSemester');
   const regPassword = document.getElementById('regPassword');
-  const regContact = document.getElementById('regContact');
+  const regMobile = document.getElementById('regMobile');
+  const regInstagram = document.getElementById('regInstagram');
   const regLinkedin = document.getElementById('regLinkedin');
   const regGithub = document.getElementById('regGithub');
   const regLeetcode = document.getElementById('regLeetcode');
@@ -94,7 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const editName = document.getElementById('editName');
   const editBranch = document.getElementById('editBranch');
   const editSemester = document.getElementById('editSemester');
-  const editContact = document.getElementById('editContact');
+  const editMobile = document.getElementById('editMobile');
+  const editInstagram = document.getElementById('editInstagram');
   const editLinkedin = document.getElementById('editLinkedin');
   const editGithub = document.getElementById('editGithub');
   const editLeetcode = document.getElementById('editLeetcode');
@@ -555,6 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (type === 'linkedin') href = 'https://linkedin.com/in/' + href.replace(/^@/, '');
       else if (type === 'github') href = 'https://github.com/' + href.replace(/^@/, '');
       else if (type === 'leetcode') href = 'https://leetcode.com/u/' + href.replace(/^@/, '');
+      else if (type === 'instagram') href = 'https://instagram.com/' + href.replace(/^@/, '');
       else href = 'https://' + href;
     }
     return href;
@@ -605,7 +608,15 @@ document.addEventListener('DOMContentLoaded', () => {
     editSemester.value = st.semester || '';
 
     const cleanContact = (!st.contact_info || st.contact_info.includes('[Hidden')) ? '' : st.contact_info;
-    editContact.value = cleanContact;
+    if (cleanContact.includes('Mobile:') || cleanContact.includes('Insta:')) {
+      const mobileMatch = cleanContact.match(/Mobile:\s*([^|]+)/i);
+      const instaMatch = cleanContact.match(/Insta:\s*(.+)/i);
+      if (editMobile) editMobile.value = mobileMatch ? mobileMatch[1].trim() : '';
+      if (editInstagram) editInstagram.value = instaMatch ? instaMatch[1].trim() : '';
+    } else {
+      if (editMobile) editMobile.value = cleanContact;
+      if (editInstagram) editInstagram.value = '';
+    }
 
     if (editLinkedin) editLinkedin.value = (!st.linkedin_url || st.linkedin_url.includes('[Hidden')) ? '' : (st.linkedin_url || '');
     if (editGithub) editGithub.value = (!st.github_url || st.github_url.includes('[Hidden')) ? '' : (st.github_url || '');
@@ -1136,16 +1147,20 @@ document.addEventListener('DOMContentLoaded', () => {
   async function handleRegisterSubmit(e) {
     e.preventDefault();
 
-    const name = regName.value.trim();
-    const email = regEmail.value.trim();
-    const rollNo = regRollNo.value.trim();
-    const branch = regBranch.value;
-    const semester = parseInt(regSemester.value);
-    const password = regPassword.value;
-    const contactInfo = regContact.value.trim();
-    const linkedinUrl = regLinkedin ? regLinkedin.value.trim() : '';
-    const githubUrl = regGithub ? regGithub.value.trim() : '';
-    const leetcodeUrl = regLeetcode ? regLeetcode.value.trim() : '';
+    const name = regName ? regName.value.trim() : '';
+    const email = regEmail ? regEmail.value.trim() : '';
+    const rollNo = regRollNo ? regRollNo.value.trim() : '';
+    const branch = regBranch ? regBranch.value : '';
+    const semester = regSemester ? parseInt(regSemester.value) : 1;
+    const password = regPassword ? regPassword.value : 'thapar123';
+
+    const mobile = regMobile ? regMobile.value.trim() : '';
+    const instagram = regInstagram ? regInstagram.value.trim() : '';
+    const contactInfo = instagram ? `Mobile: ${mobile} | Insta: ${instagram}` : `Mobile: ${mobile}`;
+
+    const linkedinUrl = regLinkedin ? formatProfileUrl(regLinkedin.value, 'linkedin') : '';
+    const githubUrl = regGithub ? formatProfileUrl(regGithub.value, 'github') : '';
+    const leetcodeUrl = regLeetcode ? formatProfileUrl(regLeetcode.value, 'leetcode') : '';
 
     if (!email.toLowerCase().endsWith('@thapar.edu')) {
       showToast('Error: Registration is strictly restricted to @thapar.edu email addresses.', 'error');
@@ -1176,11 +1191,12 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Registration successful! Welcome to GroupBy.', 'success');
       authModal.classList.add('hidden');
 
-      regName.value = '';
-      regEmail.value = '';
-      regRollNo.value = '';
-      regPassword.value = '';
-      regContact.value = '';
+      if (regName) regName.value = '';
+      if (regEmail) regEmail.value = '';
+      if (regRollNo) regRollNo.value = '';
+      if (regPassword) regPassword.value = '';
+      if (regMobile) regMobile.value = '';
+      if (regInstagram) regInstagram.value = '';
       if (regLinkedin) regLinkedin.value = '';
       if (regGithub) regGithub.value = '';
       if (regLeetcode) regLeetcode.value = '';
@@ -1288,6 +1304,10 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     if (!state.activeStudent) return;
 
+    const mobile = editMobile ? editMobile.value.trim() : '';
+    const instagram = editInstagram ? editInstagram.value.trim() : '';
+    const contactInfo = instagram ? `Mobile: ${mobile} | Insta: ${instagram}` : `Mobile: ${mobile}`;
+
     try {
       const res = await fetch(`/api/students/${state.activeStudent.student_id}/profile`, {
         method: 'PUT',
@@ -1296,10 +1316,10 @@ document.addEventListener('DOMContentLoaded', () => {
           name: editName.value.trim(),
           branch: editBranch.value,
           semester: parseInt(editSemester.value),
-          contact_info: editContact.value.trim(),
-          linkedin_url: editLinkedin ? editLinkedin.value.trim() : '',
-          github_url: editGithub ? editGithub.value.trim() : '',
-          leetcode_url: editLeetcode ? editLeetcode.value.trim() : ''
+          contact_info: contactInfo,
+          linkedin_url: editLinkedin ? formatProfileUrl(editLinkedin.value, 'linkedin') : '',
+          github_url: editGithub ? formatProfileUrl(editGithub.value, 'github') : '',
+          leetcode_url: editLeetcode ? formatProfileUrl(editLeetcode.value, 'leetcode') : ''
         })
       });
 
