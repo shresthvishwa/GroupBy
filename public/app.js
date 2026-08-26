@@ -641,6 +641,9 @@ document.addEventListener('DOMContentLoaded', () => {
             text: 'continue_with',
             logo_alignment: 'left'
           });
+          if (btnGoogleAuth) {
+            btnGoogleAuth.style.display = 'none';
+          }
         }
       }
     } catch (err) {
