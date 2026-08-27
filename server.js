@@ -555,7 +555,7 @@ app.get('/api/skills', async (req, res) => {
       SELECT sk.skill_id, sk.skill_name, sk.category_id, sc.category_name
       FROM Skill sk
       JOIN SkillCategory sc ON sk.category_id = sc.category_id
-      ORDER BY sc.category_name, sk.skill_name
+      ORDER BY sk.skill_name ASC
     `);
     
     if (!skills || skills.length === 0) {
@@ -566,7 +566,7 @@ app.get('/api/skills', async (req, res) => {
           SELECT sk.skill_id, sk.skill_name, sk.category_id, sc.category_name
           FROM Skill sk
           JOIN SkillCategory sc ON sk.category_id = sc.category_id
-          ORDER BY sc.category_name, sk.skill_name
+          ORDER BY sk.skill_name ASC
         `);
         categories = recheckCategories;
         skills = recheckSkills;

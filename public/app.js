@@ -342,9 +342,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     const customList = document.getElementById('addSkillCustomList');
-    if (!customList || !state.skillsTaxonomy) return;
+    const sortedSkills = [...state.skillsTaxonomy].sort((a, b) =>
+      a.skill_name.localeCompare(b.skill_name, undefined, { sensitivity: 'base' })
+    );
 
-    customList.innerHTML = state.skillsTaxonomy.map(sk => `
+    customList.innerHTML = sortedSkills.map(sk => `
       <div class="checkbox-option add-skill-option" data-id="${sk.skill_id}" data-name="${escapeHtml(sk.skill_name).toLowerCase()}" data-cat="${escapeHtml(sk.category_name).toLowerCase()}" style="padding: 6px 10px; cursor: pointer; user-select: none;">
         <span style="font-weight: 500;">${escapeHtml(sk.skill_name)}</span>
         <span style="font-size: 10.5px; color: var(--text-light); margin-left: auto;">(${escapeHtml(sk.category_name)})</span>
@@ -1658,9 +1660,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------
   function populateSkillFilterDropdown() {
     const listElem = document.getElementById('skillCheckboxList');
-    if (!listElem || !state.skillsTaxonomy) return;
+    const sortedSkills = [...state.skillsTaxonomy].sort((a, b) =>
+      a.skill_name.localeCompare(b.skill_name, undefined, { sensitivity: 'base' })
+    );
 
-    listElem.innerHTML = state.skillsTaxonomy.map(sk => `
+    listElem.innerHTML = sortedSkills.map(sk => `
       <label class="checkbox-option skill-checkbox-option" data-name="${escapeHtml(sk.skill_name).toLowerCase()}">
         <input type="checkbox" class="skill-checkbox" value="${escapeHtml(sk.skill_name)}">
         <span style="font-weight: 500;">${escapeHtml(sk.skill_name)}</span> <span style="font-size:10px; color: var(--text-light); margin-left: auto;">(${escapeHtml(sk.category_name)})</span>
@@ -3251,8 +3255,12 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }).join('');
 
+      const sortedTaxonomy = [...taxonomy].sort((a, b) =>
+        a.skill_name.localeCompare(b.skill_name, undefined, { sensitivity: 'base' })
+      );
+
       // Generate scrollable checkbox list matching Image 2
-      const skillChecklistHtml = taxonomy.map(sk => {
+      const skillChecklistHtml = sortedTaxonomy.map(sk => {
         const isChecked = slot.skill_ids.includes(sk.skill_id);
         return `
           <label class="checkbox-option wizard-skill-checkbox-option" data-name="${escapeHtml(sk.skill_name).toLowerCase()}">
