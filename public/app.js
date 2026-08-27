@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!skId || isNaN(skId)) {
       if (hiddenInput) hiddenInput.value = '';
-      if (labelElem) labelElem.textContent = 'Select a skill from database...';
+      if (labelElem) labelElem.textContent = 'Select a skill';
       document.querySelectorAll('.add-skill-option').forEach(el => {
         el.style.background = '';
         const check = el.querySelector('.selected-check-icon');
