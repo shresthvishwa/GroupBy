@@ -456,9 +456,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (data.success) {
         state.requests = data.data;
-        const pendingCount = data.data.pending_incoming_count;
+        const pendingCount = data.data.pending_incoming_count || 0;
+        const outgoingCount = (data.data.outgoing || []).length;
 
-        if (dashMetricPending) dashMetricPending.textContent = pendingCount;
+        const dashMetricPendingElem = document.getElementById('dashMetricPending');
+        const dashMetricRequestsSentElem = document.getElementById('dashMetricRequestsSent');
+        if (dashMetricPendingElem) dashMetricPendingElem.textContent = pendingCount;
+        if (dashMetricRequestsSentElem) dashMetricRequestsSentElem.textContent = outgoingCount;
 
         if (pendingCount > 0) {
           navRequestsBadge.textContent = pendingCount;
@@ -2767,6 +2771,11 @@ document.addEventListener('DOMContentLoaded', () => {
       t.members.some(m => m.student_id === state.activeStudent.student_id)
     );
 
+    const dashMetricTeamsJoined = document.getElementById('dashMetricTeamsJoined');
+    if (dashMetricTeamsJoined) {
+      dashMetricTeamsJoined.textContent = userTeams.length;
+    }
+
     if (userTeams.length > 0) {
       widgetYourTeams.innerHTML = userTeams.map(t => {
         const initials = getInitials(t.team_name);
@@ -2859,6 +2868,9 @@ document.addEventListener('DOMContentLoaded', () => {
           .then(res => res.json())
           .then(data => {
             const collabs = (data.success && data.data) ? data.data : [];
+            const dashMetricCollaborations = document.getElementById('dashMetricCollaborations');
+            if (dashMetricCollaborations) dashMetricCollaborations.textContent = collabs.length;
+
             if (collabs.length > 0) {
               widgetPastCollabs.innerHTML = collabs.map(c => {
                 const initials = c.partner_name ? c.partner_name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() : 'ST';

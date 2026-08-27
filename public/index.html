@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Tabler Icons CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
   <!-- Google Identity Services (OAuth 2.0) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -648,7 +648,7 @@
                 <div class="overview-metric-item">
                   <div class="metric-icon-box bg-peach"><i class="ti ti-users"></i></div>
                   <div>
-                    <div class="metric-num">3</div>
+                    <div class="metric-num" id="dashMetricTeamsJoined">0</div>
                     <div class="metric-label">Teams Joined</div>
                   </div>
                 </div>
@@ -656,7 +656,7 @@
                 <div class="overview-metric-item">
                   <div class="metric-icon-box bg-mint"><i class="ti ti-check"></i></div>
                   <div>
-                    <div class="metric-num">12</div>
+                    <div class="metric-num" id="dashMetricRequestsSent">0</div>
                     <div class="metric-label">Requests Sent</div>
                   </div>
                 </div>
@@ -664,7 +664,7 @@
                 <div class="overview-metric-item">
                   <div class="metric-icon-box bg-blue"><i class="ti ti-user"></i></div>
                   <div>
-                    <div class="metric-num">8</div>
+                    <div class="metric-num" id="dashMetricCollaborations">0</div>
                     <div class="metric-label">Collaborations</div>
                   </div>
                 </div>
@@ -672,7 +672,7 @@
                 <div class="overview-metric-item">
                   <div class="metric-icon-box bg-amber"><i class="ti ti-clock"></i></div>
                   <div>
-                    <div class="metric-num" id="dashMetricPending">5</div>
+                    <div class="metric-num" id="dashMetricPending">0</div>
                     <div class="metric-label">Pending Requests</div>
                   </div>
                 </div>
@@ -1283,6 +1283,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>
