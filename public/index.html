@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Tabler Icons CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
   <!-- Google Identity Services (OAuth 2.0) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1022,10 +1022,24 @@
       </div>
       <div class="modal-body">
         <form id="addSkillForm">
-          <div class="filter-item" style="margin-bottom: 14px;">
+          <div class="filter-item dropdown-filter-wrap" style="margin-bottom: 14px; position: relative;">
             <label>Select Skill *</label>
-            <select id="addSkillSelect" class="filter-select" required>
-            </select>
+            <div class="custom-dropdown-btn" id="btnAddSkillDropdownBtn">
+              <span id="addSkillDropdownLabel" class="dropdown-label">Select a skill from database...</span>
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="custom-dropdown-menu hidden" id="menuAddSkillDropdown" style="width: 100%; top: 100%; z-index: 1050; max-height: 280px; display: flex; flex-direction: column;">
+              <div class="dropdown-search-box" style="padding: 4px;">
+                <input type="text" id="addSkillSearchInput" placeholder="Quick find skill..." class="filter-input" style="font-size: 12px; padding: 6px 10px; width: 100%;">
+              </div>
+              <div class="dropdown-menu-header" style="padding: 4px 6px 8px 6px;">
+                <span>Predefined Skills Taxonomy</span>
+                <button type="button" class="btn-text-action" id="btnClearAddSkillSelect">Clear</button>
+              </div>
+              <div class="dropdown-menu-list" id="addSkillCustomList" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px;">
+              </div>
+            </div>
+            <input type="hidden" id="addSkillSelect" required>
           </div>
           <div class="filter-item" style="margin-bottom: 14px;">
             <label>Proficiency Level *</label>
@@ -1269,6 +1283,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>

@@ -550,13 +550,30 @@ app.get('/api/students/:id', async (req, res) => {
 // Get all skill categories and skills taxonomy
 app.get('/api/skills', async (req, res) => {
   try {
-    const [categories] = await db.query('SELECT * FROM SkillCategory ORDER BY category_name');
-    const [skills] = await db.query(`
+    let [categories] = await db.query('SELECT * FROM SkillCategory ORDER BY category_name');
+    let [skills] = await db.query(`
       SELECT sk.skill_id, sk.skill_name, sk.category_id, sc.category_name
       FROM Skill sk
       JOIN SkillCategory sc ON sk.category_id = sc.category_id
       ORDER BY sc.category_name, sk.skill_name
     `);
+    
+    if (!skills || skills.length === 0) {
+      try {
+        await seedRichSkillsTaxonomy(db);
+        const [recheckCategories] = await db.query('SELECT * FROM SkillCategory ORDER BY category_name');
+        const [recheckSkills] = await db.query(`
+          SELECT sk.skill_id, sk.skill_name, sk.category_id, sc.category_name
+          FROM Skill sk
+          JOIN SkillCategory sc ON sk.category_id = sc.category_id
+          ORDER BY sc.category_name, sk.skill_name
+        `);
+        categories = recheckCategories;
+        skills = recheckSkills;
+      } catch (seedErr) {
+        console.warn('[GroupBy Taxonomy] Auto-seed on /api/skills failed:', seedErr.message);
+      }
+    }
     
     res.json({ success: true, data: { categories, skills } });
   } catch (err) {

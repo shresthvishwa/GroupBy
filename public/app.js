@@ -141,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function init() {
     setupEventListeners();
+    renderAddSkillDropdown();
+    populateSkillFilterDropdown();
     await fetchMetadata();
     await checkSavedSession();
     await initGoogleOAuth();
@@ -168,11 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const resSkills = await fetch('/api/skills');
       const dataSkills = await resSkills.json();
-      if (dataSkills.success) {
+      if (dataSkills.success && dataSkills.data && dataSkills.data.skills && dataSkills.data.skills.length > 0) {
         state.skillsTaxonomy = dataSkills.data.skills;
-        renderAddSkillDropdown();
-        populateSkillFilterDropdown();
+      } else if (!state.skillsTaxonomy || state.skillsTaxonomy.length === 0) {
+        state.skillsTaxonomy = PREDEFINED_SKILLS_TAXONOMY_STATIC;
       }
+      renderAddSkillDropdown();
+      populateSkillFilterDropdown();
 
       const resTeams = await fetch('/api/teams');
       const dataTeams = await resTeams.json();
@@ -291,10 +295,151 @@ document.addEventListener('DOMContentLoaded', () => {
     newTeamCourse.innerHTML = modalCourseOpts;
   }
 
+  function selectSkillInAddModal(skId) {
+    const hiddenInput = document.getElementById('addSkillSelect');
+    const labelElem = document.getElementById('addSkillDropdownLabel');
+    const menuElem = document.getElementById('menuAddSkillDropdown');
+
+    if (!skId || isNaN(skId)) {
+      if (hiddenInput) hiddenInput.value = '';
+      if (labelElem) labelElem.textContent = 'Select a skill from database...';
+      document.querySelectorAll('.add-skill-option').forEach(el => {
+        el.style.background = '';
+        const check = el.querySelector('.selected-check-icon');
+        if (check) check.remove();
+      });
+      return;
+    }
+
+    const sk = state.skillsTaxonomy.find(s => s.skill_id === skId);
+    if (!sk) return;
+
+    if (hiddenInput) hiddenInput.value = sk.skill_id;
+    if (labelElem) labelElem.textContent = `${sk.skill_name} (${sk.category_name})`;
+
+    document.querySelectorAll('.add-skill-option').forEach(el => {
+      const check = el.querySelector('.selected-check-icon');
+      if (check) check.remove();
+      if (parseInt(el.dataset.id) === skId) {
+        el.style.background = '#f0fdf4';
+        const icon = document.createElement('i');
+        icon.className = 'ti ti-check selected-check-icon';
+        icon.style.color = '#16a34a';
+        icon.style.fontWeight = 'bold';
+        el.appendChild(icon);
+      } else {
+        el.style.background = '';
+      }
+    });
+
+    if (menuElem) menuElem.classList.add('hidden');
+  }
+
   function renderAddSkillDropdown() {
-    addSkillSelect.innerHTML = state.skillsTaxonomy.map(sk => 
-      `<option value="${sk.skill_id}">${sk.category_name}: ${sk.skill_name}</option>`
-    ).join('');
+    if (!state.skillsTaxonomy || state.skillsTaxonomy.length === 0) {
+      if (typeof PREDEFINED_SKILLS_TAXONOMY_STATIC !== 'undefined') {
+        state.skillsTaxonomy = PREDEFINED_SKILLS_TAXONOMY_STATIC;
+      }
+    }
+    const customList = document.getElementById('addSkillCustomList');
+    if (!customList || !state.skillsTaxonomy) return;
+
+    customList.innerHTML = state.skillsTaxonomy.map(sk => `
+      <div class="checkbox-option add-skill-option" data-id="${sk.skill_id}" data-name="${escapeHtml(sk.skill_name).toLowerCase()}" data-cat="${escapeHtml(sk.category_name).toLowerCase()}" style="padding: 6px 10px; cursor: pointer; user-select: none;">
+        <span style="font-weight: 500;">${escapeHtml(sk.skill_name)}</span>
+        <span style="font-size: 10.5px; color: var(--text-light); margin-left: auto;">(${escapeHtml(sk.category_name)})</span>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.add-skill-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const skId = parseInt(opt.dataset.id);
+        selectSkillInAddModal(skId);
+      });
+    });
+  }
+
+  function setupAddSkillCustomDropdown() {
+    const btnDropdown = document.getElementById('btnAddSkillDropdownBtn');
+    const menuDropdown = document.getElementById('menuAddSkillDropdown');
+    const searchInput = document.getElementById('addSkillSearchInput');
+    const btnClear = document.getElementById('btnClearAddSkillSelect');
+
+    if (btnDropdown && menuDropdown) {
+      btnDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = menuDropdown.classList.contains('hidden');
+        if (isHidden) {
+          menuDropdown.classList.remove('hidden');
+          if (searchInput) {
+            searchInput.value = '';
+            document.querySelectorAll('.add-skill-option').forEach(opt => opt.style.display = 'flex');
+            searchInput.focus();
+          }
+        } else {
+          menuDropdown.classList.add('hidden');
+        }
+      });
+
+      menuDropdown.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.add-skill-option').forEach(opt => {
+          const name = opt.dataset.name || '';
+          const cat = opt.dataset.cat || '';
+          if (!query || name.includes(query) || cat.includes(query)) {
+            opt.style.display = 'flex';
+          } else {
+            opt.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    if (btnClear) {
+      btnClear.addEventListener('click', () => {
+        selectSkillInAddModal(null);
+        if (searchInput) {
+          searchInput.value = '';
+          document.querySelectorAll('.add-skill-option').forEach(opt => opt.style.display = 'flex');
+        }
+      });
+    }
+
+    document.addEventListener('click', () => {
+      if (menuDropdown) menuDropdown.classList.add('hidden');
+    });
+  }
+
+  async function openAddSkillModal(skId = null) {
+    await ensureSkillsTaxonomy();
+    renderAddSkillDropdown();
+
+    const menuDropdown = document.getElementById('menuAddSkillDropdown');
+    if (menuDropdown) menuDropdown.classList.add('hidden');
+
+    const searchInput = document.getElementById('addSkillSearchInput');
+    if (searchInput) {
+      searchInput.value = '';
+      document.querySelectorAll('.add-skill-option').forEach(opt => opt.style.display = 'flex');
+    }
+
+    if (skId) {
+      selectSkillInAddModal(skId);
+    } else {
+      selectSkillInAddModal(null);
+    }
+
+    if (addSkillCredential) {
+      addSkillCredential.value = '';
+    }
+    if (addSkillModal) {
+      addSkillModal.classList.remove('hidden');
+    }
   }
 
   // ------------------------------------------------------------
@@ -516,6 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Multi-select Filter controls
     setupMultiSelectDropdowns();
+    setupAddSkillCustomDropdown();
 
     btnSearchSubmit.addEventListener('click', (e) => {
       e.preventDefault();
@@ -1065,10 +1211,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        renderAddSkillDropdown();
-        addSkillSelect.value = skId;
-        if (addSkillCredential) addSkillCredential.value = '';
-        addSkillModal.classList.remove('hidden');
+        openAddSkillModal(skId);
       });
     });
   }
@@ -1289,7 +1432,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnOpenAddSkill').addEventListener('click', () => {
-      addSkillModal.classList.remove('hidden');
+      openAddSkillModal();
     });
 
     document.querySelectorAll('.btn-delete-skill').forEach(btn => {
