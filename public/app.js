@@ -693,6 +693,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const rForm = document.getElementById('registerForm');
     if (gSec) gSec.classList.remove('hidden');
     if (rForm) rForm.classList.add('hidden');
+    
+    initGoogleOAuth();
+
+    if (btnGoogleAuth && (!googleSignInBtnContainer || !googleSignInBtnContainer.hasChildNodes())) {
+      btnGoogleAuth.style.display = 'flex';
+    }
+
     authModal.classList.remove('hidden');
   }
 
@@ -779,11 +786,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function initGoogleOAuth() {
     try {
-      const res = await fetch('/api/auth/google/config');
-      const data = await res.json();
-      googleClientId = data.clientId || '';
+      if (!googleClientId) {
+        const res = await fetch('/api/auth/google/config');
+        const data = await res.json();
+        googleClientId = data.clientId || '';
+      }
 
-      if (googleClientId && window.google && window.google.accounts) {
+      if (googleClientId && window.google && window.google.accounts && window.google.accounts.id) {
         window.google.accounts.id.initialize({
           client_id: googleClientId,
           callback: handleGoogleCredentialResponse,
@@ -791,6 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (googleSignInBtnContainer) {
+          googleSignInBtnContainer.innerHTML = '';
           window.google.accounts.id.renderButton(googleSignInBtnContainer, {
             theme: 'outline',
             size: 'large',
@@ -802,29 +812,46 @@ document.addEventListener('DOMContentLoaded', () => {
             btnGoogleAuth.style.display = 'none';
           }
         }
+      } else {
+        if (btnGoogleAuth) {
+          btnGoogleAuth.style.display = 'flex';
+        }
       }
     } catch (err) {
       console.warn('Google OAuth config lookup failed:', err);
+      if (btnGoogleAuth) {
+        btnGoogleAuth.style.display = 'flex';
+      }
     }
+  }
 
-    if (btnGoogleAuth) {
-      btnGoogleAuth.addEventListener('click', () => {
-        hideGoogleAuthError();
+  if (btnGoogleAuth) {
+    btnGoogleAuth.addEventListener('click', () => {
+      hideGoogleAuthError();
 
-        if (googleClientId && window.google && window.google.accounts && window.google.accounts.id) {
-          window.google.accounts.id.prompt();
-        } else {
-          // Interactive prompt for testing @thapar.edu vs non-thapar email addresses
-          const userEmail = prompt(
-            "Google OAuth Sign-In Simulation (@thapar.edu restricted):\n\nEnter your Google email address to test login (e.g. shresth.v@thapar.edu or personal@gmail.com):",
-            "shresth.v@thapar.edu"
-          );
-          if (userEmail) {
-            submitGoogleOAuthTest(userEmail);
-          }
+      if (googleClientId && window.google && window.google.accounts && window.google.accounts.id) {
+        window.google.accounts.id.prompt();
+      } else {
+        // Interactive prompt for testing @thapar.edu vs non-thapar email addresses
+        const userEmail = prompt(
+          "Google OAuth Sign-In Simulation (@thapar.edu restricted):\n\nEnter your Google email address to test login (e.g. shresth.v@thapar.edu or personal@gmail.com):",
+          "shresth.v@thapar.edu"
+        );
+        if (userEmail) {
+          submitGoogleOAuthTest(userEmail);
         }
-      });
-    }
+      }
+    });
+  }
+
+  if (typeof window !== 'undefined') {
+    const checkGoogleInterval = setInterval(() => {
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        clearInterval(checkGoogleInterval);
+        initGoogleOAuth();
+      }
+    }, 300);
+    setTimeout(() => clearInterval(checkGoogleInterval), 5000);
   }
 
   async function submitGoogleOAuthTest(email) {
