@@ -547,6 +547,33 @@ app.get('/api/students/:id', async (req, res) => {
   }
 });
 
+// Get past collaborations for a student
+app.get('/api/students/:id/collaborations', async (req, res) => {
+  const studentId = parseInt(req.params.id);
+  if (!studentId) return res.status(400).json({ success: false, error: 'Invalid student ID' });
+
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        pc.collaboration_id,
+        CASE WHEN pc.student_a_id = ? THEN st_b.student_id ELSE st_a.student_id END AS partner_id,
+        CASE WHEN pc.student_a_id = ? THEN st_b.name ELSE st_a.name END AS partner_name,
+        COALESCE(pc.project_name, t.team_name, 'Group Collaboration') AS project_name,
+        pc.created_at
+      FROM PastCollaboration pc
+      JOIN Student st_a ON pc.student_a_id = st_a.student_id
+      JOIN Student st_b ON pc.student_b_id = st_b.student_id
+      LEFT JOIN Team t ON pc.team_id = t.team_id
+      WHERE pc.student_a_id = ? OR pc.student_b_id = ?
+      ORDER BY pc.created_at DESC
+    `, [studentId, studentId, studentId, studentId]);
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Get all skill categories and skills taxonomy
 app.get('/api/skills', async (req, res) => {
   try {

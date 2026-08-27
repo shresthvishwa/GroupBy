@@ -2847,28 +2847,52 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    widgetPastCollabs.innerHTML = `
-      <div class="collab-item">
-        <div class="collab-left">
-          <div class="collab-avatar">RS</div>
-          <div>
-            <div class="collab-name">Riya Sharma</div>
-            <div class="collab-project">Data Structures Project</div>
+    if (widgetPastCollabs) {
+      if (!state.activeStudent) {
+        widgetPastCollabs.innerHTML = `
+          <div style="padding: 16px 8px; text-align: center; color: var(--text-sub); font-size: 12.5px;">
+            Sign in to view past collaborations.
           </div>
-        </div>
-        <span class="role-badge">Worked together</span>
-      </div>
-      <div class="collab-item">
-        <div class="collab-left">
-          <div class="collab-avatar">KV</div>
-          <div>
-            <div class="collab-name">Karan Verma</div>
-            <div class="collab-project">DBMS Mini Project</div>
-          </div>
-        </div>
-        <span class="role-badge">Worked together</span>
-      </div>
-    `;
+        `;
+      } else {
+        fetch(`/api/students/${state.activeStudent.student_id}/collaborations`)
+          .then(res => res.json())
+          .then(data => {
+            const collabs = (data.success && data.data) ? data.data : [];
+            if (collabs.length > 0) {
+              widgetPastCollabs.innerHTML = collabs.map(c => {
+                const initials = c.partner_name ? c.partner_name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() : 'ST';
+                return `
+                  <div class="collab-item">
+                    <div class="collab-left">
+                      <div class="collab-avatar">${escapeHtml(initials)}</div>
+                      <div>
+                        <div class="collab-name">${escapeHtml(c.partner_name)}</div>
+                        <div class="collab-project">${escapeHtml(c.project_name)}</div>
+                      </div>
+                    </div>
+                    <span class="role-badge">Worked together</span>
+                  </div>
+                `;
+              }).join('');
+            } else {
+              widgetPastCollabs.innerHTML = `
+                <div style="padding: 16px 8px; text-align: center; color: var(--text-sub); font-size: 12.5px;">
+                  <i class="ti ti-users" style="font-size: 22px; color: var(--text-light); margin-bottom: 4px; display: block;"></i>
+                  No past collaborations recorded yet.
+                </div>
+              `;
+            }
+          })
+          .catch(() => {
+            widgetPastCollabs.innerHTML = `
+              <div style="padding: 16px 8px; text-align: center; color: var(--text-sub); font-size: 12.5px;">
+                No past collaborations recorded yet.
+              </div>
+            `;
+          });
+      }
+    }
   }
 
   // ------------------------------------------------------------
