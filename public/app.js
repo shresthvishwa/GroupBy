@@ -482,8 +482,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------
   // VIEW NAVIGATION & SWITCHING
   // ------------------------------------------------------------
+  function updateCreateTeamButtonVisibility() {
+    const btnCreateTeam = document.getElementById('btnOpenCreateTeamModal');
+    if (!btnCreateTeam) return;
+
+    const allowedViews = ['search-teams', 'team-merges', 'my-teams'];
+    if (allowedViews.includes(state.currentView)) {
+      btnCreateTeam.style.display = 'inline-flex';
+    } else {
+      btnCreateTeam.style.display = 'none';
+    }
+  }
+
   function showDashboardLandingView() {
     state.currentView = 'dashboard';
+    updateCreateTeamButtonVisibility();
 
     // Highlight Dashboard sidebar tab
     sidebarItems.forEach(i => i.classList.remove('active'));
@@ -502,6 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showSearchTeamsView() {
     state.currentView = 'search-teams';
+    updateCreateTeamButtonVisibility();
 
     sidebarItems.forEach(i => i.classList.remove('active'));
     document.querySelector('[data-tab="search-teams"]').classList.add('active');
@@ -518,6 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showSearchStudentsView() {
     state.currentView = 'search-students';
+    updateCreateTeamButtonVisibility();
 
     sidebarItems.forEach(i => i.classList.remove('active'));
     document.querySelector('[data-tab="search-students"]').classList.add('active');
@@ -976,6 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
       filterBarContainer.style.display = 'flex';
       loadDashboard();
     }
+    updateCreateTeamButtonVisibility();
   }
 
   // ------------------------------------------------------------
@@ -983,6 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------
   function showMyTeamsFeed() {
     state.currentView = 'my-teams';
+    updateCreateTeamButtonVisibility();
     sidebarItems.forEach(i => i.classList.remove('active'));
     const item = document.querySelector('[data-tab="my-teams"]');
     if (item) item.classList.add('active');
@@ -1078,6 +1095,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showCollaborationsFeed() {
     state.currentView = 'collaborations';
+    updateCreateTeamButtonVisibility();
     sidebarItems.forEach(i => i.classList.remove('active'));
     const item = document.querySelector('[data-tab="collaborations"]');
     if (item) item.classList.add('active');
@@ -1168,6 +1186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showSkillCategoriesFeed() {
     state.currentView = 'skill-categories';
+    updateCreateTeamButtonVisibility();
     sidebarItems.forEach(i => i.classList.remove('active'));
     const item = document.querySelector('[data-tab="skill-categories"]');
     if (item) item.classList.add('active');
@@ -1393,6 +1412,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // MY PROFILE FEED & SKILL MANAGEMENT
   // ------------------------------------------------------------
   async function loadMyProfileFeed() {
+    state.currentView = 'my-profile';
+    updateCreateTeamButtonVisibility();
     feedTitleText.textContent = 'My Profile & Skills';
     feedOpenSlotsBadge.textContent = 'Student Account';
 
@@ -2155,6 +2176,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // DEDICATED TEAM MERGES TAB FEED
   // ------------------------------------------------------------
   async function showTeamMergesFeed() {
+    state.currentView = 'team-merges';
+    updateCreateTeamButtonVisibility();
     feedTitleText.textContent = 'Team Merge Suggestions';
     feedOpenSlotsBadge.textContent = 'Complementary Skill Merges';
 
@@ -2355,6 +2378,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // REQUESTS VIEW (Incoming & Outgoing Connection Requests)
   // ------------------------------------------------------------
   async function loadRequestsFeed() {
+    state.currentView = 'requests';
+    updateCreateTeamButtonVisibility();
     const teamMergeSection = document.getElementById('teamMergeSection');
     if (teamMergeSection) teamMergeSection.classList.add('hidden');
 
