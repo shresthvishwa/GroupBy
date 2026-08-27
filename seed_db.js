@@ -32,7 +32,7 @@ async function reseed() {
         created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT chk_thapar_email CHECK (LOWER(email) LIKE '%@thapar.edu'),
         CONSTRAINT chk_thapar_branch CHECK (branch IN (
-          'Chemical', 'Civil', 'Computer', 'Computer Engineering', 'Electrical', 'Mechanical', 'Mechatronics',
+          'Chemical', 'Civil', 'Computer', 'Electrical', 'Mechanical', 'Mechatronics',
           'Electronics (Instrumentation & Control)', 'Electronics & Communication', 'Electronics & Computer',
           'Biomedical', 'Computer Science', 'Computer Science & Business Systems', 'BioTechnology',
           'Artificial Intelligence & Data Science', 'Electrical & Computer', 'Electronics (VLSI Design and Technology)',
