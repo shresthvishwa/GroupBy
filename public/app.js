@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // DOM Elements
-  const activeStudentSelect = document.getElementById('activeStudentSelect');
   const userGreeting = document.getElementById('userGreeting');
   const userAvatarCircle = document.getElementById('userAvatarCircle');
   const userAvatarName = document.getElementById('userAvatarName');
@@ -158,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const dataStudents = await resStudents.json();
       if (dataStudents.success) {
         state.students = dataStudents.data;
-        renderStudentSelector();
       }
 
       const resCourses = await fetch('/api/courses');
@@ -188,17 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function renderStudentSelector() {
-    if (!activeStudentSelect || !state.students) return;
-    activeStudentSelect.innerHTML = '';
-    state.students.forEach((st) => {
-      const opt = document.createElement('option');
-      opt.value = st.student_id;
-      opt.textContent = `${st.name} (${st.branch} Sem ${st.semester})`;
-      activeStudentSelect.appendChild(opt);
-    });
-  }
-
   const landingPage = document.getElementById('landingPage');
   const appWrapper = document.querySelector('.app-wrapper');
   const btnLandingNavLogin = document.getElementById('btnLandingNavLogin');
@@ -218,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
   async function activateStudentSession(studentObj) {
     if (!studentObj) return;
     state.activeStudent = studentObj;
-    activeStudentSelect.value = studentObj.student_id;
     localStorage.setItem('groupby_active_student_id', studentObj.student_id);
     await updateActiveProfileUI();
     authModal.classList.add('hidden');
@@ -231,21 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
     openAuthModal();
   }
 
-  const btnQuickDemoLogin = document.getElementById('btnQuickDemoLogin');
-  const quickDemoSelect = document.getElementById('quickDemoSelect');
-
-  if (btnQuickDemoLogin && quickDemoSelect) {
-    btnQuickDemoLogin.addEventListener('click', async () => {
-      const selectedId = parseInt(quickDemoSelect.value) || 1;
-      const studentObj = (state.students || []).find(s => s.student_id === selectedId) || (state.students ? state.students[0] : null);
-      if (studentObj) {
-        await activateStudentSession(studentObj);
-      } else {
-        showToast('Loading campus profiles, please try again in a moment...', 'info');
-      }
-    });
-  }
-
   if (btnLandingNavLogin) btnLandingNavLogin.addEventListener('click', handleLandingSignIn);
   if (btnLandingNavSignup) btnLandingNavSignup.addEventListener('click', handleLandingSignIn);
   if (btnLandingHeroSignIn) btnLandingHeroSignIn.addEventListener('click', handleLandingSignIn);
@@ -256,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const savedStudent = state.students.find(s => s.student_id === savedId);
       if (savedStudent) {
         state.activeStudent = savedStudent;
-        if (activeStudentSelect) activeStudentSelect.value = savedStudent.student_id;
         await updateActiveProfileUI();
         showMainApp();
         showDashboardLandingView();
@@ -551,19 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function setupEventListeners() {
-    activeStudentSelect.addEventListener('change', async (e) => {
-      const stId = parseInt(e.target.value);
-      state.activeStudent = state.students.find(s => s.student_id === stId);
-      localStorage.setItem('groupby_active_student_id', stId);
-      await updateActiveProfileUI();
-      if (state.currentView === 'my-profile') loadMyProfileFeed();
-      else if (state.currentView === 'requests') loadRequestsFeed();
-      else if (state.currentView === 'team-merges') showTeamMergesFeed();
-      else if (state.currentView === 'search-students') loadCandidateSearchFeed();
-      else if (state.currentView === 'search-teams') loadDashboard();
-      else showDashboardLandingView();
-    });
-
     sidebarItems.forEach(item => {
       item.addEventListener('click', () => {
         const tab = item.dataset.tab;
