@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderStudentSelector() {
+    if (!activeStudentSelect || !state.students) return;
     activeStudentSelect.innerHTML = '';
     state.students.forEach((st) => {
       const opt = document.createElement('option');
@@ -342,6 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     const customList = document.getElementById('addSkillCustomList');
+    if (!customList || !state.skillsTaxonomy || state.skillsTaxonomy.length === 0) return;
+
     const sortedSkills = [...state.skillsTaxonomy].sort((a, b) =>
       a.skill_name.localeCompare(b.skill_name, undefined, { sensitivity: 'base' })
     );
@@ -1695,6 +1698,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------
   function populateSkillFilterDropdown() {
     const listElem = document.getElementById('skillCheckboxList');
+    if (!listElem || !state.skillsTaxonomy || state.skillsTaxonomy.length === 0) return;
+
     const sortedSkills = [...state.skillsTaxonomy].sort((a, b) =>
       a.skill_name.localeCompare(b.skill_name, undefined, { sensitivity: 'base' })
     );
