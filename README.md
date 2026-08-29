@@ -1,4 +1,4 @@
-# 🚀 GroupBy — Campus Team Formation & Relational Matching Platform
+# GroupBy — Campus Team Formation & Relational Matching Platform
 
 [![Node.js](https://img.shields.io/badge/Node.js-v18%2B-green.svg)](https://nodejs.org/)
 [![Express.js](https://img.shields.io/badge/Express.js-v4-blue.svg)](https://expressjs.com/)
@@ -9,24 +9,24 @@
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
-- **🔐 Strict `@thapar.edu` Authentication**: Registration and sign-in are strictly restricted to official `@thapar.edu` email addresses. Non-Thapar emails are rejected at both server and client levels.
-- **🛡️ Two-Way Privacy Protection**: Student contact details (email, phone, handles) remain hidden until a connection request or invite is explicitly **Accepted**.
-- **🧮 Relational Division Search**: Uses SQL relational set division to match open team slots with candidate skill profiles.
-- **🔀 Relational Complementarity Team Merge Engine**: Automatically suggests Team-to-Team merges by finding small open teams with mutually complementary skill sets.
-- **📊 GROUP BY Skill Gap Analysis**: Calculates missing vs covered skill categories across teams using relational set-difference queries (`WHERE category_id NOT IN (...)`).
-- **🎛️ Multi-Select Filter Bar**:
+- **Strict `@thapar.edu` Authentication**: Registration and sign-in are strictly restricted to official `@thapar.edu` email addresses. Non-Thapar emails are rejected at both server and client levels.
+- **Two-Way Privacy Protection**: Student contact details (email, phone, handles) remain hidden until a connection request or invite is explicitly **Accepted**.
+- **Relational Division Search**: Uses SQL relational set division to match open team slots with candidate skill profiles.
+- **Relational Complementarity Team Merge Engine**: Automatically suggests Team-to-Team merges by finding small open teams with mutually complementary skill sets.
+- **GROUP BY Skill Gap Analysis**: Calculates missing vs covered skill categories across teams using relational set-difference queries (`WHERE category_id NOT IN (...)`).
+- **Multi-Select Filter Bar**:
   - **Alphabetical Branches**: Multi-select across 20 TIET engineering branches sorted A to Z.
   - **Semesters**: Multi-select from **1st to 8th Semester**.
   - **Predefined Skills**: 80+ predefined skills sorted alphabetically with an inline quick-find search box.
-- **📜 Verified Skill Credentials**: Students can attach optional certificate/proof links (e.g. Coursera, HackerRank, GitHub proofs) to demonstrate credibility.
-- **🔗 Developer Links**: Supports adding LinkedIn, GitHub, and LeetCode profile links to student cards and profile pages.
-- **📈 Dynamic Profile Completion Widget**: Live weighted completion meter (0%-100%) featuring an animated CSS `conic-gradient` gauge.
+- **Verified Skill Credentials**: Students can attach optional certificate/proof links (e.g. Coursera, HackerRank, GitHub proofs) to demonstrate credibility.
+- **Developer Links**: Supports adding LinkedIn, GitHub, and LeetCode profile links to student cards and profile pages.
+- **Dynamic Profile Completion Widget**: Live weighted completion meter (0%-100%) featuring an animated CSS `conic-gradient` gauge.
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 - **Backend**: Node.js, Express.js
 - **Database**: MySQL 8.0+ (`InnoDB` engine with stored procedures, triggers, foreign keys, cascading deletes, and schema auto-migrations)
@@ -36,7 +36,7 @@
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 d:/DBMS/GroupBy/
@@ -52,7 +52,7 @@ d:/DBMS/GroupBy/
 
 ---
 
-## ⚙️ Prerequisites & Installation
+## Prerequisites & Installation
 
 ### 1. Prerequisites
 - **Node.js** (v18.0.0 or higher)
@@ -61,8 +61,8 @@ d:/DBMS/GroupBy/
 
 ### 2. Clone Repository
 ```bash
-git clone https://github.com/your-username/groupby.git
-cd groupby
+git clone https://github.com/shresthvishwa/GroupBy.git
+cd GroupBy
 ```
 
 ### 3. Install Dependencies
@@ -113,7 +113,7 @@ Open your browser and navigate to **`http://localhost:3000`**.
 
 ---
 
-## 🗄️ Database Schema & Relational Models
+## Database Schema & Relational Models
 
 - **`Student`**: User accounts, roll numbers, branches, semesters, and social links.
 - **`SkillCategory`**: Categories powering `GROUP BY` skill gap calculations.
@@ -129,7 +129,7 @@ Open your browser and navigate to **`http://localhost:3000`**.
 
 ---
 
-## 🎨 Color Palette & Metric Tokens
+## Color Palette & Metric Tokens
 
 - **Primary Accent**: Terracotta Rust (`#A35E47` / `#b55a3c`)
 - **Overview Metric Dashboard Icons**:
@@ -140,7 +140,7 @@ Open your browser and navigate to **`http://localhost:3000`**.
 
 ---
 
-## 🚀 Deployment Guide
+## Deployment Guide
 
 ### Deploy to Render / Railway:
 1. Push your repository to GitHub.
@@ -150,12 +150,12 @@ Open your browser and navigate to **`http://localhost:3000`**.
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 - **Shresth Vishwakarma** (COE-2028, Thapar Institute of Engineering & Technology)
 - **LinkedIn**: [linkedin.com/in/shresth-v](https://www.linkedin.com/in/shresth-v)
 
 ---
 
-## 📄 License
+## License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
