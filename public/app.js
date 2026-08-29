@@ -587,19 +587,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const landingScrollIndicator = document.getElementById('landingScrollIndicator');
     if (landingScrollIndicator) {
       landingScrollIndicator.addEventListener('click', () => {
-        const targetSection = document.getElementById('howItWorksSection');
-        if (targetSection) {
-          targetSection.scrollIntoView({ behavior: 'smooth' });
+        const targetGrid = document.querySelector('.steps-cards-grid');
+        if (targetGrid) {
+          targetGrid.scrollIntoView({ behavior: 'smooth' });
         }
       });
-
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 80) {
-          landingScrollIndicator.classList.add('fade-out');
-        } else {
-          landingScrollIndicator.classList.remove('fade-out');
-        }
-      }, { passive: true });
     }
 
     // Dashboard Hero Choice Card Click Handlers

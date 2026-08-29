@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Tabler Icons CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
   <!-- Google Identity Services (OAuth 2.0) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -104,14 +104,6 @@
           </g>
         </svg>
       </div>
-
-      <!-- LANDING SCROLL DOWN HINT INDICATOR -->
-      <div class="landing-scroll-indicator" id="landingScrollIndicator" title="Scroll down to explore">
-        <span class="scroll-hint-text">Scroll to explore</span>
-        <div class="scroll-hint-icon">
-          <i class="ti ti-chevron-down"></i>
-        </div>
-      </div>
     </section>
 
     <!-- HOW IT WORKS SECTION -->
@@ -123,6 +115,12 @@
           <h2 class="steps-title">
             Three simple steps to build your <span class="text-rust">dream team</span>
           </h2>
+          <!-- BOUNCING DOWN ARROW INDICATOR -->
+          <div class="landing-scroll-indicator" id="landingScrollIndicator" title="Scroll down">
+            <div class="scroll-hint-icon">
+              <i class="ti ti-chevron-down"></i>
+            </div>
+          </div>
         </div>
 
         <div class="steps-cards-grid">
@@ -1291,6 +1289,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
