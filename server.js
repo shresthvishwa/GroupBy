@@ -1274,7 +1274,7 @@ app.post('/api/requests/:request_id/add-to-team', async (req, res) => {
 app.get('/api/teams', async (req, res) => {
   try {
     const [teams] = await db.query(`
-      SELECT t.team_id, t.team_name, t.description, t.project_type, t.max_members, t.deadline, t.status, t.created_at,
+      SELECT t.team_id, t.team_name, t.status, t.created_at,
              c.course_id, c.course_code, c.course_name,
              creator.name AS creator_name, creator.student_id AS creator_id
       FROM Team t
@@ -1293,7 +1293,7 @@ app.get('/api/teams', async (req, res) => {
       team.members = members;
 
       const [slots] = await db.query(`
-        SELECT s.slot_id, s.role_title, s.slot_status, s.filled_by, s.created_at, s.filled_at,
+        SELECT s.slot_id, s.slot_status, s.filled_by, s.created_at, s.filled_at,
                st.name AS filled_by_name
         FROM Slot s
         LEFT JOIN Student st ON s.filled_by = st.student_id
