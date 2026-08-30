@@ -166,7 +166,7 @@ app.post('/api/auth/google', async (req, res) => {
 
       return res.json({
         success: true,
-        message: `Welcome back via Google, ${student.name.split(' ')[0]}!`,
+        message: 'Your future self says thanks for logging in.',
         user: student
       });
     } else {
@@ -228,7 +228,7 @@ app.post('/api/auth/login', async (req, res) => {
 
     res.json({
       success: true,
-      message: `Welcome back, ${student.name.split(' ')[0]}!`,
+      message: 'Your future self says thanks for logging in.',
       user: student
     });
   } catch (err) {

@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     authModal.classList.add('hidden');
     showMainApp();
     showDashboardLandingView();
-    showToast(`Welcome to GroupBy, ${studentObj.name}!`, 'success');
+    showToast('Your future self says thanks for logging in.', 'success');
   }
 
   function handleLandingSignIn() {
