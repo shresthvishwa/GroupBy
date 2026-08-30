@@ -239,12 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
   async function updateActiveProfileUI() {
     if (!state.activeStudent) return;
 
-    const firstName = state.activeStudent.name.split(' ')[0];
-    const initial = state.activeStudent.name.charAt(0);
+    const firstName = state.activeStudent.name ? state.activeStudent.name.split(' ')[0] : 'Student';
+    const initial = state.activeStudent.name ? state.activeStudent.name.charAt(0) : 'S';
 
-    userGreeting.textContent = `Welcome back, ${firstName} 🥀`;
-    userAvatarCircle.textContent = initial;
-    userAvatarName.textContent = state.activeStudent.name;
+    if (userGreeting) userGreeting.textContent = `Welcome back, ${firstName} 🥀`;
+    if (userAvatarCircle) userAvatarCircle.textContent = initial;
+    if (userAvatarName) userAvatarName.textContent = state.activeStudent.name || '';
 
     if (newTeamCreator) {
       newTeamCreator.value = `${state.activeStudent.name} (ID #${state.activeStudent.student_id})`;
@@ -255,15 +255,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderCourseDropdowns() {
+    if (!state.courses) return;
     const courseOpts = '<option value="">All Courses</option>' + 
       state.courses.map(c => `<option value="${c.course_id}">${c.course_code} - ${c.course_name}</option>`).join('');
     
-    courseFilterSelect.innerHTML = courseOpts;
+    if (courseFilterSelect) {
+      courseFilterSelect.innerHTML = courseOpts;
+    }
 
     const modalCourseOpts = '<option value="">None (General Project)</option>' + 
       state.courses.map(c => `<option value="${c.course_id}">${c.course_code} - ${c.course_name}</option>`).join('');
     
-    newTeamCourse.innerHTML = modalCourseOpts;
+    if (newTeamCourse) {
+      newTeamCourse.innerHTML = modalCourseOpts;
+    }
   }
 
   function selectSkillInAddModal(skId) {
@@ -2757,15 +2762,15 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProfileCompletionWidget();
     if (!state.activeStudent) return;
 
-    if (state.activeStudent.skills) {
+    if (state.activeStudent.skills && widgetSkillPills) {
       widgetSkillPills.innerHTML = state.activeStudent.skills.map(sk => 
         `<span class="skill-pill">${sk.skill_name}</span>`
       ).join('');
     }
 
-    const userTeams = state.teams.filter(t => 
+    const userTeams = (state.teams || []).filter(t => 
       t.creator_id === state.activeStudent.student_id || 
-      t.members.some(m => m.student_id === state.activeStudent.student_id)
+      (t.members && t.members.some(m => m.student_id === state.activeStudent.student_id))
     );
 
     const dashMetricTeamsJoined = document.getElementById('dashMetricTeamsJoined');
@@ -2773,40 +2778,44 @@ document.addEventListener('DOMContentLoaded', () => {
       dashMetricTeamsJoined.textContent = userTeams.length;
     }
 
-    if (userTeams.length > 0) {
-      widgetYourTeams.innerHTML = userTeams.map(t => {
-        const initials = getInitials(t.team_name);
-        const role = t.creator_id === state.activeStudent.student_id ? 'Admin' : 'Member';
-        return `
-          <div class="widget-team-item">
-            <div class="widget-team-left">
-              <div class="widget-avatar">${initials}</div>
-              <div>
-                <div class="widget-team-name">${t.team_name}</div>
-                <div class="widget-team-sub">${t.course_code ? t.course_code + ' Project' : 'General Project'}</div>
+    if (widgetYourTeams) {
+      if (userTeams.length > 0) {
+        widgetYourTeams.innerHTML = userTeams.map(t => {
+          const initials = getInitials(t.team_name);
+          const role = t.creator_id === state.activeStudent.student_id ? 'Admin' : 'Member';
+          return `
+            <div class="widget-team-item">
+              <div class="widget-team-left">
+                <div class="widget-avatar">${initials}</div>
+                <div>
+                  <div class="widget-team-name">${t.team_name}</div>
+                  <div class="widget-team-sub">${t.course_code ? t.course_code + ' Project' : 'General Project'}</div>
+                </div>
               </div>
+              <span class="role-badge">${role}</span>
             </div>
-            <span class="role-badge">${role}</span>
-          </div>
-        `;
-      }).join('');
-    } else {
-      widgetYourTeams.innerHTML = '<div style="font-size:12px; color: var(--text-sub);">No teams joined yet.</div>';
+          `;
+        }).join('');
+      } else {
+        widgetYourTeams.innerHTML = '<div style="font-size:12px; color: var(--text-sub);">No teams joined yet.</div>';
+      }
     }
 
-    const incoming = state.requests.incoming || [];
+    const incoming = (state.requests && state.requests.incoming) ? state.requests.incoming : [];
     const pendingIncoming = incoming.filter(r => r.status === 'pending');
 
-    if (pendingIncoming.length > 0) {
-      widgetRequestsSummary.innerHTML = `
-        <div style="background: var(--badge-amber-bg); color: var(--badge-amber-text); padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500;">
-          <i class="ti ti-mail"></i> You have <strong>${pendingIncoming.length}</strong> pending request${pendingIncoming.length > 1 ? 's' : ''}!
-        </div>
-      `;
-    } else {
-      widgetRequestsSummary.innerHTML = `
-        <div style="font-size: 12.5px; color: var(--text-sub);">No pending requests at this time.</div>
-      `;
+    if (widgetRequestsSummary) {
+      if (pendingIncoming.length > 0) {
+        widgetRequestsSummary.innerHTML = `
+          <div style="background: var(--badge-amber-bg); color: var(--badge-amber-text); padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500;">
+            <i class="ti ti-mail"></i> You have <strong>${pendingIncoming.length}</strong> pending request${pendingIncoming.length > 1 ? 's' : ''}!
+          </div>
+        `;
+      } else {
+        widgetRequestsSummary.innerHTML = `
+          <div style="font-size: 12.5px; color: var(--text-sub);">No pending requests at this time.</div>
+        `;
+      }
     }
 
     const targetTeam = userTeams[0] || state.teams[0];
