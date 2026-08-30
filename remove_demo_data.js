@@ -13,24 +13,24 @@ async function removeDemoData() {
     multipleStatements: true
   });
 
-  console.log('Purging demo data (IDs >= 9000) from ' + (process.env.DB_HOST || 'localhost') + '...');
+  console.log('Purging all demo data and student accounts from ' + (process.env.DB_HOST || 'localhost') + '...');
 
   try {
     await conn.query('SET FOREIGN_KEY_CHECKS = 0;');
 
     await conn.query(`
-      DELETE FROM ConnectionRequest WHERE request_id >= 9000 OR student_id >= 9000 OR slot_id >= 9000;
-      DELETE FROM PastCollaboration WHERE student_a_id >= 9000 OR student_b_id >= 9000 OR team_id >= 9000;
-      DELETE FROM SlotRequiredSkill WHERE slot_id >= 9000;
-      DELETE FROM Slot WHERE slot_id >= 9000 OR team_id >= 9000 OR filled_by >= 9000;
-      DELETE FROM TeamMembership WHERE team_id >= 9000 OR student_id >= 9000;
-      DELETE FROM Team WHERE team_id >= 9000 OR created_by >= 9000;
-      DELETE FROM StudentSkill WHERE student_id >= 9000;
-      DELETE FROM Student WHERE student_id >= 9000;
+      TRUNCATE TABLE ConnectionRequest;
+      TRUNCATE TABLE PastCollaboration;
+      TRUNCATE TABLE SlotRequiredSkill;
+      TRUNCATE TABLE Slot;
+      TRUNCATE TABLE TeamMembership;
+      TRUNCATE TABLE Team;
+      TRUNCATE TABLE StudentSkill;
+      TRUNCATE TABLE Student;
     `);
 
     await conn.query('SET FOREIGN_KEY_CHECKS = 1;');
-    console.log('SUCCESS: All temporary demo data removed cleanly!');
+    console.log('SUCCESS: All temporary demo data and accounts removed cleanly!');
   } catch (err) {
     console.error('Error removing demo data:', err.message);
   } finally {
