@@ -39,7 +39,7 @@
 ## Project Structure
 
 ```
-d:/DBMS/GroupBy/
+GroupBy/
 ├── server.js               # Express API backend & SQL query endpoints
 ├── groupby_schema.sql      # Database schema, stored procedures, triggers & seeds
 ├── package.json            # Node.js project dependencies
