@@ -1450,7 +1450,29 @@ app.post('/api/slots/fill', async (req, res) => {
   }
 });
 
-// Start Server
+// Health Check & Keep-Alive Endpoint
+app.get('/health', async (req, res) => {
+  try {
+    await db.query('SELECT 1');
+    res.status(200).json({ status: 'ok', database: 'connected', timestamp: new Date().toISOString() });
+  } catch (err) {
+    res.status(500).json({ status: 'error', database: err.message });
+  }
+});
+
+app.get('/api/health', (req, res) => res.redirect('/health'));
+
+// Start Server & Aiven Keep-Alive Heartbeat
 app.listen(PORT, () => {
   console.log(`[GroupBy Server] Running on http://localhost:${PORT}`);
+
+  // Aiven Database Keep-Alive Heartbeat (Pings MySQL every 4 hours to prevent auto-pause)
+  setInterval(async () => {
+    try {
+      await db.query('SELECT 1;');
+      console.log('[Aiven DB Keep-Alive] Periodic heartbeat ping successful.');
+    } catch (err) {
+      console.error('[Aiven DB Keep-Alive] Ping error:', err.message);
+    }
+  }, 4 * 60 * 60 * 1000);
 });
